@@ -17,7 +17,7 @@ ADD_DEFINITIONS( -g -W -Wall -D_REENTRANT -D_FILE_OFFSET_BITS=64 -DAC_HAS_INFO
 
 INCLUDE_DIRECTORIES(./  ../base ../base/jsoncpp ../base/pb/protocol
 ../base/pb/)
-LINK_DIRECTORIES(./ ../bin ${PB_LIB_DIR} ../base/slog/lib )
+LINK_DIRECTORIES(./ ../bin ${PB_LIB_DIR})
 
 #ADD_XXXX必须在TARGET_LINK_LIBRARIES前面，否则会报错
 #ADD_LIBRARY(${PROJECTNAME} SHARED/STATIC ${SRC_LIST})

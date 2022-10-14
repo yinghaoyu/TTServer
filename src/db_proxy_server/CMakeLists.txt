@@ -29,7 +29,7 @@ INCLUDE_DIRECTORIES(./ ./businiess ../base ../base/jsoncpp ../base/pb/protocol
 ../base/pb/ ${MYSQL_INCLUDE_DIR})
 
 #指定链接文件目录
-LINK_DIRECTORIES(./ ../bin ${PB_LIB_DIR} ${MYSQL_LIB} ../base/slog/lib)
+LINK_DIRECTORIES(./ ../bin ${PB_LIB_DIR} ${MYSQL_LIB})
 
 #ADD_XXXX必须在TARGET_LINK_LIBRARIES前面，否则会报错
 #ADD_LIBRARY(${PROJECTNAME} SHARED/STATIC ${SRC_LIST})
