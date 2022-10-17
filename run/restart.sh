@@ -1,7 +1,5 @@
 #/bin/sh
 #start or stop the im-server
-
-
 function restart() {
     cd $1
     if [ ! -e *.conf  ]
