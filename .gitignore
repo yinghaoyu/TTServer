@@ -11,29 +11,29 @@ src/base/pb/lib
 
 src/db_proxy_server/adapters
 src/db_proxy_server/build
-src/db_proxy_server/.clang
+src/db_proxy_server/.clangd
 src/db_proxy_server/libhiredis.a
 
 src/http_msg_server/build
-src/http_msg_server/.clang
+src/http_msg_server/.clangd
 
 src/file_server/build
-src/file_server/.clang
+src/file_server/.clangd
 
 src/login_server/build
-src/login_server/.clang
+src/login_server/.clangd
 
 src/msfs/build
-src/msfs/.clang
+src/msfs/.clangd
 
 src/msg_server/build
-src/msg_server/.clang
+src/msg_server/.clangd
 
 src/push_server/build
-src/push_server/.clang
+src/push_server/.clangd
 
 src/route_server/build
-src/route_server/.clang
+src/route_server/.clangd
 
 src/hiredis/hiredis-master
 
