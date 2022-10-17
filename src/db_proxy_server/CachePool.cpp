@@ -725,7 +725,7 @@ int CacheManager::Init()
   char *cache_instances = config_file.GetConfigName("CacheInstances");
   if (!cache_instances)
   {
-    // log("not configure CacheIntance");
+    puts("not configure CacheIntance");
     return 1;
   }
 
@@ -756,7 +756,7 @@ int CacheManager::Init()
     CachePool *pCachePool = new CachePool(pool_name, cache_host, atoi(str_cache_port), atoi(str_cache_db), atoi(str_max_conn_cnt));
     if (pCachePool->Init())
     {
-      // log("Init cache pool failed");
+      puts("Init cache pool failed");
       return 3;
     }
 

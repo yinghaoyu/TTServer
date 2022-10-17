@@ -53,6 +53,7 @@ build() {
   cp db_proxy_server/dbproxyserver.conf ../run/db_proxy_server
 
   cp bin/msfs ../run/msfs/
+  cp msfs/msfs.conf ../run/msfs/
 
   cp bin/daeml ../run/
 
