@@ -44,3 +44,6 @@ src/protobuf/bin
 src/protobuf/include
 src/protobuf/lib
 src/protobuf/protobuf-2.6.1
+
+src/protobuf/*
+!src/protobuf/*.tar.gz
