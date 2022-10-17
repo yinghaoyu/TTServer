@@ -48,14 +48,14 @@ int main(int argc, char *argv[])
   CacheManager *pCacheManager = CacheManager::getInstance();
   if (!pCacheManager)
   {
-    // log("CacheManager init failed");
+    puts("CacheManager init failed");
     return -1;
   }
 
   CDBManager *pDBManager = CDBManager::getInstance();
   if (!pDBManager)
   {
-    // log("DBManager init failed");
+    puts("DBManager init failed");
     return -1;
   }
   puts("db init success");
@@ -110,13 +110,13 @@ int main(int argc, char *argv[])
 
   if (!listen_ip || !str_listen_port || !str_thread_num || !str_file_site || !str_aes_key)
   {
-    // log("missing ListenIP/ListenPort/ThreadNum/MsfsSite/aesKey, exit...");
+    puts("missing ListenIP/ListenPort/ThreadNum/MsfsSite/aesKey, exit...");
     return -1;
   }
 
   if (strlen(str_aes_key) != 32)
   {
-    // log("aes key is invalied");
+    puts("aes key is invalied");
     return -2;
   }
   string strAesKey(str_aes_key, 32);
@@ -143,10 +143,7 @@ int main(int argc, char *argv[])
   if (ret == NETLIB_ERROR)
     return ret;
 
-  /// yunfan add 2014.9.28
-  // for 603 push
   curl_global_init(CURL_GLOBAL_ALL);
-  /// yunfan add end
 
   init_proxy_conn(thread_num);
   CSyncCenter::getInstance()->init();
