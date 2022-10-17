@@ -95,7 +95,7 @@ CREATE TABLE `IMGroupMessage_(x)` (
     `updated` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
     PRIMARY KEY (`id`),
     KEY `idx_groupId_status_created` (`groupId`,`status`,`created`),
-    KEY `idx_groupId_msgId_status_created` (`groupId`,`msgId`,`status`,`created`)   
+    KEY `idx_groupId_msgId_status_created` (`groupId`,`msgId`,`status`,`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='IM群消息表'
 
 --消息表，x代表第几张表，目前做了分表有8张:0-7.具体在那张表，是relateId%IMMessage表数目.
@@ -108,7 +108,7 @@ CREATE TABLE `IMMessage_0` (
     `content` varchar(4096) COLLATE utf8mb4_bin DEFAULT '' COMMENT '消息内容',
     `type` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '消息类型',
     `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0正常 1被删除',
-    `created` int(11) unsigned NOT NULL COMMENT '创建时间', 
+    `created` int(11) unsigned NOT NULL COMMENT '创建时间',
     `updated` int(11) unsigned NOT NULL COMMENT '更新时间',     PRIMARY KEY (`id`),
     KEY `idx_relateId_status_created` (`relateId`,`status`,`created`),
     KEY `idx_relateId_status_msgId_created` (`relateId`,`status`,`msgId`,`created`),
@@ -156,7 +156,7 @@ CREATE TABLE `IMUser` (
     `avatar` varchar(255) COLLATE utf8mb4_bin DEFAULT '' COMMENT '自定义用户头像',
     `departId` int(11) unsigned NOT NULL COMMENT '所属部门Id',
     `status` tinyint(2) unsigned DEFAULT '0' COMMENT '1. 试用期 2. 正式 3. 离职 4.实习',
-	`sign_info` varchar(32) COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '个性签名',
+    `sign_info` varchar(32) COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '个性签名',
     `created` int(11) unsigned NOT NULL COMMENT '创建时间',
     `updated` int(11) unsigned NOT NULL COMMENT '更新时间',
     PRIMARY KEY (`id`),
