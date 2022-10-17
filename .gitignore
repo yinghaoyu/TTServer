@@ -1,6 +1,7 @@
 *.tar.gz
-!/run/restart.sh
-!/run/monitor.sh
+
+run/*
+!run/*.sh
 
 src/bin
 src/**/bin
