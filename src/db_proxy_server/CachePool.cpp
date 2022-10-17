@@ -1,17 +1,3 @@
-/*
- * CachePool.cpp
- *
- *  Created on: 2014年7月24日
- *      Author: ziteng
- *  Modify By ZhangYuanhao
- *  2015-01-13
- *  Add some redis command
- * Modify By ZhangYuanhao
- * 2015-01-14
- * Add comment for function
- *
- */
-
 #include "CachePool.h"
 #include "ConfigFileReader.h"
 

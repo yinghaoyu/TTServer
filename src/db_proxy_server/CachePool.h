@@ -1,13 +1,3 @@
-/*
- * CachePool.h
- *
- *  Created on: 2014年7月24日
- *      Author: ziteng
- *  Modify By ZhangYuanhao
- *  2015-01-13
- *  Add some redis command
- */
-
 #ifndef CACHEPOOL_H_
 #define CACHEPOOL_H_
 

@@ -1,10 +1,3 @@
-/*
- * db_proxy_server.cpp
- *
- *  Created on: 2014年7月21日
- *      Author: ziteng
- */
-
 #include "CachePool.h"
 #include "ConfigFileReader.h"
 #include "DBPool.h"
