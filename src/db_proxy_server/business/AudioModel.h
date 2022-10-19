@@ -15,16 +15,15 @@ class CAudioModel
   virtual ~CAudioModel();
 
   static CAudioModel *getInstance();
-  void setUrl(string &strFileUrl);
+  void setUrl(string &url);
 
-  bool readAudios(list<IM::BaseDefine::MsgInfo> &lsMsg);
+  bool readAudios(list<IM::BaseDefine::MsgInfo> &messages);
 
-  int saveAudioInfo(uint32_t nFromId, uint32_t nToId, uint32_t nCreateTime, const char *pAudioData, uint32_t nAudioLen);
+  int saveAudioInfo(uint32_t fromId, uint32_t toId, uint32_t createTime, const char *audioData, uint32_t audioLen);
 
  private:
   CAudioModel();
-  //    void GetAudiosInfo(uint32_t nAudioId, IM::BaseDefine::MsgInfo& msg);
-  bool readAudioContent(uint32_t nCostTime, uint32_t nSize, const string &strPath, IM::BaseDefine::MsgInfo &msg);
+  bool readAudioContent(uint32_t duration, uint32_t size, const string &path, IM::BaseDefine::MsgInfo &message);
 
  private:
   static CAudioModel *m_pInstance;

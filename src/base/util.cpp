@@ -177,6 +177,8 @@ void replace_mark(string &str, string &new_value, uint32_t &begin_pos)
   begin_pos = pos + prime_new_value.size();
 }
 
+// 把数据库语句中的?占位符用new_value取代
+// 例如insert into table values(?, ?, ?);
 void replace_mark(string &str, uint32_t new_value, uint32_t &begin_pos)
 {
   stringstream ss;
