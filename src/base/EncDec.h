@@ -1,14 +1,3 @@
-/*================================================================
- *     Copyright (c) 2015年 lanhu. All rights reserved.
- *
- *   文件名称：EncDec.h
- *   创 建 者：Zhang Yuanhao
- *   邮    箱：bluefoxah@gmail.com
- *   创建日期：2015年01月27日
- *   描    述：AES
- *
- #pragma once
- ================================================================*/
 #ifndef __ENCDEC_H__
 #define __ENCDEC_H__
 
