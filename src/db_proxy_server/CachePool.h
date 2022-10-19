@@ -11,7 +11,7 @@ class CachePool;
 class CacheConn
 {
  public:
-  CacheConn(CachePool *pCachePool);
+  CacheConn(CachePool *cachePool);
   virtual ~CacheConn();
 
   int Init();
@@ -59,8 +59,8 @@ class CacheConn
   bool lrange(string key, long start, long end, list<string> &ret_value);
 
  private:
-  CachePool *m_pCachePool;
-  redisContext *m_pContext;
+  CachePool *m_cachePool;
+  redisContext *m_context;
   uint64_t m_last_connect_time;
 };
 
