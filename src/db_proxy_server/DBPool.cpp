@@ -1,15 +1,3 @@
-/*
- * DBPool.cpp
- *
- *  Created on: 2014年7月22日
- *      Author: ziteng
- *  Modify By ZhangYuanhao
- *  2015-01-12
- *  enable config the max connection of every instance
- *  2015-01-25
- *  modify the charset.
- */
-
 #include "DBPool.h"
 #include "ConfigFileReader.h"
 
@@ -120,13 +108,13 @@ bool CPrepareStatement::Init(MYSQL *mysql, string &sql)
   m_stmt = mysql_stmt_init(mysql);
   if (!m_stmt)
   {
-    // log("mysql_stmt_init failed");
+    printf("mysql_stmt_init failed\n");
     return false;
   }
 
   if (mysql_stmt_prepare(m_stmt, sql.c_str(), sql.size()))
   {
-    // log("mysql_stmt_prepare failed: %s", mysql_stmt_error(m_stmt));
+    printf("mysql_stmt_prepare failed: %s\n", mysql_stmt_error(m_stmt));
     return false;
   }
 
@@ -136,7 +124,7 @@ bool CPrepareStatement::Init(MYSQL *mysql, string &sql)
     m_param_bind = new MYSQL_BIND[m_param_cnt];
     if (!m_param_bind)
     {
-      // log("new failed");
+      printf("new failed\n");
       return false;
     }
 
@@ -150,7 +138,7 @@ void CPrepareStatement::SetParam(uint32_t index, int &value)
 {
   if (index >= m_param_cnt)
   {
-    // log("index too large: %d", index);
+    printf("index too large: %d\n", index);
     return;
   }
 
@@ -162,7 +150,7 @@ void CPrepareStatement::SetParam(uint32_t index, uint32_t &value)
 {
   if (index >= m_param_cnt)
   {
-    // log("index too large: %d", index);
+    printf("index too large: %d\n", index);
     return;
   }
 
@@ -174,7 +162,7 @@ void CPrepareStatement::SetParam(uint32_t index, string &value)
 {
   if (index >= m_param_cnt)
   {
-    // log("index too large: %d", index);
+    printf("index too large: %d\n", index);
     return;
   }
 
@@ -187,7 +175,7 @@ void CPrepareStatement::SetParam(uint32_t index, const string &value)
 {
   if (index >= m_param_cnt)
   {
-    // log("index too large: %d", index);
+    printf("index too large: %d\n", index);
     return;
   }
 
@@ -200,25 +188,25 @@ bool CPrepareStatement::ExecuteUpdate()
 {
   if (!m_stmt)
   {
-    // log("no m_stmt");
+    printf("no m_stmt\n");
     return false;
   }
 
   if (mysql_stmt_bind_param(m_stmt, m_param_bind))
   {
-    // log("mysql_stmt_bind_param failed: %s", mysql_stmt_error(m_stmt));
+    printf("mysql_stmt_bind_param failed: %s\n", mysql_stmt_error(m_stmt));
     return false;
   }
 
   if (mysql_stmt_execute(m_stmt))
   {
-    // log("mysql_stmt_execute failed: %s", mysql_stmt_error(m_stmt));
+    printf("mysql_stmt_execute failed: %s\n", mysql_stmt_error(m_stmt));
     return false;
   }
 
   if (mysql_stmt_affected_rows(m_stmt) == 0)
   {
-    // log("ExecuteUpdate have no effect");
+    printf("ExecuteUpdate have no effect\n");
     return false;
   }
 
@@ -230,7 +218,6 @@ uint32_t CPrepareStatement::GetInsertId()
   return mysql_stmt_insert_id(m_stmt);
 }
 
-/////////////////////
 CDBConn::CDBConn(CDBPool *pPool)
 {
   m_pDBPool = pPool;
@@ -244,7 +231,7 @@ int CDBConn::Init()
   m_mysql = mysql_init(NULL);
   if (!m_mysql)
   {
-    // log("mysql_init failed");
+    printf("mysql_init failed\n");
     return 1;
   }
 
@@ -255,7 +242,7 @@ int CDBConn::Init()
   if (!mysql_real_connect(m_mysql, m_pDBPool->GetDBServerIP(), m_pDBPool->GetUsername(), m_pDBPool->GetPasswrod(), m_pDBPool->GetDBName(),
                           m_pDBPool->GetDBServerPort(), NULL, 0))
   {
-    // log("mysql_real_connect failed: %s", mysql_error(m_mysql));
+    printf("mysql_real_connect failed: %s\n", mysql_error(m_mysql));
     return 2;
   }
 
@@ -273,14 +260,14 @@ CResultSet *CDBConn::ExecuteQuery(const char *sql_query)
 
   if (mysql_real_query(m_mysql, sql_query, strlen(sql_query)))
   {
-    // log("mysql_real_query failed: %s, sql: %s", mysql_error(m_mysql), sql_query);
+    printf("mysql_real_query failed: %s, sql: %s\n", mysql_error(m_mysql), sql_query);
     return NULL;
   }
 
   MYSQL_RES *res = mysql_store_result(m_mysql);
   if (!res)
   {
-    // log("mysql_store_result failed: %s", mysql_error(m_mysql));
+    printf("mysql_store_result failed: %s\n", mysql_error(m_mysql));
     return NULL;
   }
 
@@ -294,7 +281,7 @@ bool CDBConn::ExecuteUpdate(const char *sql_query)
 
   if (mysql_real_query(m_mysql, sql_query, strlen(sql_query)))
   {
-    // log("mysql_real_query failed: %s, sql: %s", mysql_error(m_mysql), sql_query);
+    printf("mysql_real_query failed: %s, sql: %s\n", mysql_error(m_mysql), sql_query);
     return false;
   }
 
@@ -308,6 +295,7 @@ bool CDBConn::ExecuteUpdate(const char *sql_query)
   }
 }
 
+// 获取转义后的字符串
 char *CDBConn::EscapeString(const char *content, uint32_t content_len)
 {
   if (content_len > (MAX_ESCAPE_STRING_LEN >> 1))
@@ -371,7 +359,7 @@ int CDBPool::Init()
     m_free_list.push_back(pDBConn);
   }
 
-  // log("db pool: %s, size: %d", m_pool_name.c_str(), (int) m_free_list.size());
+  printf("db pool: %s, size: %d\n", m_pool_name.c_str(), (int) m_free_list.size());
   return 0;
 }
 
@@ -395,7 +383,7 @@ CDBConn *CDBPool::GetDBConn()
       int ret = pDBConn->Init();
       if (ret)
       {
-        // log("Init DBConnecton failed");
+        printf("Init DBConnecton failed\n");
         delete pDBConn;
         m_free_notify.Unlock();
         return NULL;
@@ -404,7 +392,7 @@ CDBConn *CDBPool::GetDBConn()
       {
         m_free_list.push_back(pDBConn);
         m_db_cur_conn_cnt++;
-        // log("new db connection: %s, conn_cnt: %d", m_pool_name.c_str(), m_db_cur_conn_cnt);
+        printf("new db connection: %s, conn_cnt: %d\n", m_pool_name.c_str(), m_db_cur_conn_cnt);
       }
     }
   }
@@ -439,7 +427,6 @@ void CDBPool::RelDBConn(CDBConn *pConn)
   m_free_notify.Unlock();
 }
 
-/////////////////
 CDBManager::CDBManager() {}
 
 CDBManager::~CDBManager() {}
@@ -458,11 +445,7 @@ CDBManager *CDBManager::getInstance()
 
   return s_db_manager;
 }
-/*
- * 2015-01-12
- * modify by ZhangYuanhao :enable config the max connection of every instance
- *
- */
+
 int CDBManager::Init()
 {
   CConfigFileReader config_file("dbproxyserver.conf");
@@ -471,7 +454,7 @@ int CDBManager::Init()
 
   if (!db_instances)
   {
-    // log("not configure DBInstances");
+    printf("not configure DBInstances\n");
     return 1;
   }
 
@@ -502,7 +485,7 @@ int CDBManager::Init()
 
     if (!db_host || !str_db_port || !db_dbname || !db_username || !db_password || !str_maxconncnt)
     {
-      // log("not configure db instance: %s", pool_name);
+      printf("not configure db instance: %s\n", pool_name);
       return 2;
     }
 
@@ -511,7 +494,7 @@ int CDBManager::Init()
     CDBPool *pDBPool = new CDBPool(pool_name, db_host, db_port, db_username, db_password, db_dbname, db_maxconncnt);
     if (pDBPool->Init())
     {
-      // log("init db instance failed: %s", pool_name);
+      printf("init db instance failed: %s\n", pool_name);
       return 3;
     }
     m_dbpool_map.insert(make_pair(pool_name, pDBPool));

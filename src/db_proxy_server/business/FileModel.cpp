@@ -1,13 +1,3 @@
-/*================================================================
-*     Copyright (c) 2014年 lanhu. All rights reserved.
-*
-*   文件名称：FileModel.cpp
-*   创 建 者：Zhang Yuanhao
-*   邮    箱：bluefoxah@gmail.com
-*   创建日期：2014年12月31日
-*   描    述：
-*
-================================================================*/
 #include "FileModel.h"
 #include "../DBPool.h"
 
@@ -49,13 +39,13 @@ void CFileModel::getOfflineFile(uint32_t userId, list<IM::BaseDefine::OfflineFil
     }
     else
     {
-      // log("no result for:%s", strSql.c_str());
+      printf("no result for:%s\n", strSql.c_str());
     }
     pDBManager->RelDBConn(pDBConn);
   }
   else
   {
-    // log("no db connection for teamtalk_slave");
+    printf("no db connection for teamtalk_slave\n");
   }
 }
 
@@ -88,7 +78,7 @@ void CFileModel::addOfflineFile(uint32_t fromId, uint32_t toId, string &taskId, 
 
       if (!bRet)
       {
-        // log("insert message failed: %s", strSql.c_str());
+        printf("insert message failed: %s\n", strSql.c_str());
       }
     }
     delete pStmt;
@@ -96,7 +86,7 @@ void CFileModel::addOfflineFile(uint32_t fromId, uint32_t toId, string &taskId, 
   }
   else
   {
-    // log("no db connection for teamtalk_master");
+    printf("no db connection for teamtalk_master\n");
   }
 }
 
@@ -109,16 +99,16 @@ void CFileModel::delOfflineFile(uint32_t fromId, uint32_t toId, string &taskId)
     string strSql = "delete from IMTransmitFile where  fromId=" + int2string(fromId) + " and toId=" + int2string(toId) + " and taskId='" + taskId + "'";
     if (pDBConn->ExecuteUpdate(strSql.c_str()))
     {
-      // log("delete offline file success.%d->%d:%s", fromId, toId, taskId.c_str());
+      printf("delete offline file success.%d->%d:%s\n", fromId, toId, taskId.c_str());
     }
     else
     {
-      // log("delete offline file failed.%d->%d:%s", fromId, toId, taskId.c_str());
+      printf("delete offline file failed.%d->%d:%s\n", fromId, toId, taskId.c_str());
     }
     pDBManager->RelDBConn(pDBConn);
   }
   else
   {
-    // log("no db connection for teamtalk_master");
+    printf("no db connection for teamtalk_master\n");
   }
 }

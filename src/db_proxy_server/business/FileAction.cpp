@@ -1,13 +1,3 @@
-/*================================================================
-*     Copyright (c) 2014年 lanhu. All rights reserved.
-*
-*   文件名称：FileAction.cpp
-*   创 建 者：Zhang Yuanhao
-*   邮    箱：bluefoxah@gmail.com
-*   创建日期：2014年12月31日
-*   描    述：
-*
-================================================================*/
 #include "FileAction.h"
 #include "../ProxyConn.h"
 #include "FileModel.h"
@@ -38,7 +28,7 @@ void hasOfflineFile(CImPdu *pPdu, uint32_t conn_uuid)
       pInfo->set_file_size(it->file_size());
     }
 
-    // log("userId=%u, count=%u", nUserId, msgResp.offline_file_list_size());
+    printf("userId=%u, count=%u\n", nUserId, msgResp.offline_file_list_size());
 
     msgResp.set_attach_data(msg.attach_data());
     pPduRes->SetPBMsg(&msgResp);
@@ -49,7 +39,7 @@ void hasOfflineFile(CImPdu *pPdu, uint32_t conn_uuid)
   }
   else
   {
-    // log("parse pb failed");
+    printf("parse pb failed\n");
   }
 }
 
@@ -65,8 +55,9 @@ void addOfflineFile(CImPdu *pPdu, uint32_t conn_uuid)
     uint32_t nFileSize = msg.file_size();
     CFileModel *pModel = CFileModel::getInstance();
     pModel->addOfflineFile(nUserId, nToId, strTaskId, strFileName, nFileSize);
-    // log("fromId=%u, toId=%u, taskId=%s, fileName=%s, fileSize=%u", nUserId, nToId, strTaskId.c_str(), strFileName.c_str(), nFileSize);
+    printf("fromId=%u, toId=%u, taskId=%s, fileName=%s, fileSize=%u\n", nUserId, nToId, strTaskId.c_str(), strFileName.c_str(), nFileSize);
   }
+  (void) conn_uuid;
 }
 
 void delOfflineFile(CImPdu *pPdu, uint32_t conn_uuid)
@@ -79,7 +70,8 @@ void delOfflineFile(CImPdu *pPdu, uint32_t conn_uuid)
     string strTaskId = msg.task_id();
     CFileModel *pModel = CFileModel::getInstance();
     pModel->delOfflineFile(nUserId, nToId, strTaskId);
-    // log("fromId=%u, toId=%u, taskId=%s", nUserId, nToId, strTaskId.c_str());
+    printf("fromId=%u, toId=%u, taskId=%s\n", nUserId, nToId, strTaskId.c_str());
   }
+  (void) conn_uuid;
 }
 };  // namespace DB_PROXY

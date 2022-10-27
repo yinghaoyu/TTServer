@@ -1,15 +1,5 @@
-/*================================================================
- *   Copyright (C) 2014 All rights reserved.
- *
- *   文件名称：GroupMessageModel.cpp
- *   创 建 者：Zhang Yuanhao
- *   邮    箱：bluefoxah@gmail.com
- *   创建日期：2014年12月15日
- *   描    述：
- *
- ================================================================*/
-
 #include <map>
+#include <memory>
 #include <set>
 
 #include "../CachePool.h"
@@ -27,21 +17,10 @@ extern string strAudioEnc;
 
 CGroupMessageModel *CGroupMessageModel::m_pInstance = NULL;
 
-/**
- *  构造函数
- */
 CGroupMessageModel::CGroupMessageModel() {}
 
-/**
- *  析构函数
- */
 CGroupMessageModel::~CGroupMessageModel() {}
 
-/**
- *  单例
- *
- *  @return 返回单例指针
- */
 CGroupMessageModel *CGroupMessageModel::getInstance()
 {
   if (!m_pInstance)
@@ -52,79 +31,75 @@ CGroupMessageModel *CGroupMessageModel::getInstance()
   return m_pInstance;
 }
 
-/**
- *  发送群消息接口
- *
- *  @param nRelateId     关系Id
- *  @param nFromId       发送者Id
- *  @param nGroupId      群组Id
- *  @param nMsgType      消息类型
- *  @param nCreateTime   消息创建时间
- *  @param nMsgId        消息Id
- *  @param strMsgContent 消息类容
- *
- *  @return 成功返回true 失败返回false
- */
-bool CGroupMessageModel::sendMessage(uint32_t nFromId,
-                                     uint32_t nGroupId,
-                                     IM::BaseDefine::MsgType nMsgType,
-                                     uint32_t nCreateTime,
-                                     uint32_t nMsgId,
-                                     const string &strMsgContent)
+//  发送群消息接口
+//  relateId     关系Id
+//  fromId       发送者Id
+//  groupId      群组Id
+//  msgType      消息类型
+//  createTime   消息创建时间
+//  msgId        消息Id
+//  msgContent 消息类容
+//  成功返回true 失败返回false
+bool CGroupMessageModel::sendMessage(uint32_t fromId,
+                                     uint32_t groupId,
+                                     IM::BaseDefine::MsgType msgType,
+                                     uint32_t createTime,
+                                     uint32_t msgId,
+                                     const string &msgContent)
 {
-  bool bRet = false;
-  if (CGroupModel::getInstance()->isInGroup(nFromId, nGroupId))
+  bool ret = false;
+  // 先在redis中查询用户是否在这个群组中
+  if (CGroupModel::getInstance()->isInGroup(fromId, groupId))
   {
-    CDBManager *pDBManager = CDBManager::getInstance();
-    CDBConn *pDBConn = pDBManager->GetDBConn("teamtalk_master");
-    if (pDBConn)
+    CDBManager *mgr = CDBManager::getInstance();
+    CDBConn *conn = mgr->GetDBConn("teamtalk_master");
+    if (conn)
     {
-      string strTableName = "IMGroupMessage_" + int2string(nGroupId % 8);
-      string strSql = "insert into " + strTableName +
-                      " (`groupId`, `userId`, `msgId`, `content`, `type`, `status`, `updated`, `created`) "
-                      "values(?, ?, ?, ?, ?, ?, ?, ?)";
+      string tableName = "IMGroupMessage_" + int2string(groupId % 8);
+      string sql = "insert into " + tableName +
+                   " (`groupId`, `userId`, `msgId`, `content`, `type`, `status`, `updated`, `created`) "
+                   "values(?, ?, ?, ?, ?, ?, ?, ?)";
 
       // 必须在释放连接前delete CPrepareStatement对象，否则有可能多个线程操作mysql对象，会crash
-      CPrepareStatement *pStmt = new CPrepareStatement();
-      if (pStmt->Init(pDBConn->GetMysql(), strSql))
-      {
-        uint32_t nStatus = 0;
-        uint32_t nType = nMsgType;
-        uint32_t index = 0;
-        pStmt->SetParam(index++, nGroupId);
-        pStmt->SetParam(index++, nFromId);
-        pStmt->SetParam(index++, nMsgId);
-        pStmt->SetParam(index++, strMsgContent);
-        pStmt->SetParam(index++, nType);
-        pStmt->SetParam(index++, nStatus);
-        pStmt->SetParam(index++, nCreateTime);
-        pStmt->SetParam(index++, nCreateTime);
 
-        bool bRet = pStmt->ExecuteUpdate();
-        if (bRet)
+      std::shared_ptr<CPrepareStatement> stmt(new CPrepareStatement());
+      if (stmt->Init(conn->GetMysql(), sql))
+      {
+        uint32_t status = 0;
+        uint32_t type = msgType;
+        uint32_t index = 0;
+        stmt->SetParam(index++, groupId);
+        stmt->SetParam(index++, fromId);
+        stmt->SetParam(index++, msgId);
+        stmt->SetParam(index++, msgContent);
+        stmt->SetParam(index++, type);
+        stmt->SetParam(index++, status);
+        stmt->SetParam(index++, createTime);
+        stmt->SetParam(index++, createTime);
+
+        if (stmt->ExecuteUpdate())
         {
-          CGroupModel::getInstance()->updateGroupChat(nGroupId);
-          incMessageCount(nFromId, nGroupId);
-          clearMessageCount(nFromId, nGroupId);
+          CGroupModel::getInstance()->updateGroupChat(groupId);
+          incMessageCount(fromId, groupId);
+          clearMessageCount(fromId, groupId);
         }
         else
         {
-          // log("insert message failed: %s", strSql.c_str());
+          printf("insert message failed: %s\n", sql.c_str());
         }
       }
-      delete pStmt;
-      pDBManager->RelDBConn(pDBConn);
+      mgr->RelDBConn(conn);
     }
     else
     {
-      // log("no db connection for teamtalk_master");
+      printf("no db connection for teamtalk_master\n");
     }
   }
   else
   {
-    // log("not in the group.fromId=%u, groupId=%u", nFromId, nGroupId);
+    printf("not in the group.fromId=%u, groupId=%u", fromId, groupId);
   }
-  return bRet;
+  return ret;
 }
 
 /**
@@ -141,33 +116,33 @@ bool CGroupMessageModel::sendMessage(uint32_t nFromId,
  *
  *  @return 成功返回true，失败返回false
  */
-bool CGroupMessageModel::sendAudioMessage(uint32_t nFromId,
-                                          uint32_t nGroupId,
-                                          IM::BaseDefine::MsgType nMsgType,
-                                          uint32_t nCreateTime,
-                                          uint32_t nMsgId,
-                                          const char *pMsgContent,
-                                          uint32_t nMsgLen)
+bool CGroupMessageModel::sendAudioMessage(uint32_t fromId,
+                                          uint32_t groupId,
+                                          IM::BaseDefine::MsgType msgType,
+                                          uint32_t createTime,
+                                          uint32_t msgId,
+                                          const char *msgContent,
+                                          uint32_t msgLen)
 {
-  if (nMsgLen <= 4)
+  if (msgLen <= 4)
   {
     return false;
   }
 
-  if (!CGroupModel::getInstance()->isInGroup(nFromId, nGroupId))
+  if (!CGroupModel::getInstance()->isInGroup(fromId, groupId))
   {
-    // log("not in the group.fromId=%u, groupId=%u", nFromId, nGroupId);
+    printf("not in the group.fromId=%u, groupId=%u\n", fromId, groupId);
     return false;
   }
 
   CAudioModel *pAudioModel = CAudioModel::getInstance();
-  int nAudioId = pAudioModel->saveAudioInfo(nFromId, nGroupId, nCreateTime, pMsgContent, nMsgLen);
+  int nAudioId = pAudioModel->saveAudioInfo(fromId, groupId, createTime, msgContent, msgLen);
 
   bool bRet = true;
   if (nAudioId != -1)
   {
     string strMsg = int2string(nAudioId);
-    bRet = sendMessage(nFromId, nGroupId, nMsgType, nCreateTime, nMsgId, strMsg);
+    bRet = sendMessage(fromId, groupId, msgType, createTime, msgId, strMsg);
   }
   else
   {
@@ -185,24 +160,24 @@ bool CGroupMessageModel::sendAudioMessage(uint32_t nFromId,
  *
  *  @return 成功返回true，失败返回false
  */
-bool CGroupMessageModel::clearMessageCount(uint32_t nUserId, uint32_t nGroupId)
+bool CGroupMessageModel::clearMessageCount(uint32_t userId, uint32_t groupId)
 {
   bool bRet = false;
   CacheManager *pCacheManager = CacheManager::getInstance();
   CacheConn *pCacheConn = pCacheManager->GetCacheConn("unread");
   if (pCacheConn)
   {
-    string strGroupKey = int2string(nGroupId) + GROUP_TOTAL_MSG_COUNTER_REDIS_KEY_SUFFIX;
+    string strGroupKey = int2string(groupId) + GROUP_TOTAL_MSG_COUNTER_REDIS_KEY_SUFFIX;
     map<string, string> mapGroupCount;
     bool bRet = pCacheConn->hgetAll(strGroupKey, mapGroupCount);
     pCacheManager->RelCacheConn(pCacheConn);
     if (bRet)
     {
-      string strUserKey = int2string(nUserId) + "_" + int2string(nGroupId) + GROUP_USER_MSG_COUNTER_REDIS_KEY_SUFFIX;
+      string strUserKey = int2string(userId) + "_" + int2string(groupId) + GROUP_USER_MSG_COUNTER_REDIS_KEY_SUFFIX;
       string strReply = pCacheConn->hmset(strUserKey, mapGroupCount);
       if (strReply.empty())
       {
-        // log("hmset %s failed !", strUserKey.c_str());
+        printf("hmset %s failed !\n", strUserKey.c_str());
       }
       else
       {
@@ -211,12 +186,12 @@ bool CGroupMessageModel::clearMessageCount(uint32_t nUserId, uint32_t nGroupId)
     }
     else
     {
-      // log("hgetAll %s failed !", strGroupKey.c_str());
+      printf("hgetAll %s failed !\n", strGroupKey.c_str());
     }
   }
   else
   {
-    // log("no cache connection for unread");
+    printf("no cache connection for unread\n");
   }
   return bRet;
 }
@@ -250,18 +225,18 @@ bool CGroupMessageModel::incMessageCount(uint32_t nUserId, uint32_t nGroupId)
       }
       else
       {
-        // log("hmset %s failed !", strUserKey.c_str());
+        printf("hmset %s failed !\n", strUserKey.c_str());
       }
     }
     else
     {
-      // log("hgetAll %s failed!", strGroupKey.c_str());
+      printf("hgetAll %s failed!\n", strGroupKey.c_str());
     }
     pCacheManager->RelCacheConn(pCacheConn);
   }
   else
   {
-    // log("no cache connection for unread");
+    printf("no cache connection for unread\n");
   }
   return bRet;
 }

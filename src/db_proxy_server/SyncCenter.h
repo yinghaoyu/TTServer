@@ -59,4 +59,4 @@ class CSyncCenter
   CLock last_update_lock_;
 };
 
-#endif /*defined(__CACHEMANAGER_H__) */
+#endif

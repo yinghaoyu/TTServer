@@ -1,14 +1,3 @@
-/*================================================================
- *   Copyright (C) 2014 All rights reserved.
- *
- *   文件名称：GroupAction.cpp
- *   创 建 者：Zhang Yuanhao
- *   邮    箱：bluefoxah@gmail.com
- *   创建日期：2014年12月15日
- *   描    述：
- *
- ================================================================*/
-
 #include "GroupAction.h"
 #include "../ProxyConn.h"
 #include "GroupModel.h"
@@ -46,7 +35,7 @@ void createGroup(CImPdu *pPdu, uint32_t conn_uuid)
         uint32_t nUserId = msg.member_id_list(i);
         setMember.insert(nUserId);
       }
-      // log("createGroup.%d create %s, userCnt=%u", nUserId, strGroupName.c_str(), setMember.size());
+      printf("createGroup.%d create %s, userCnt=%ld\n", nUserId, strGroupName.c_str(), setMember.size());
 
       uint32_t nGroupId = CGroupModel::getInstance()->createGroup(nUserId, strGroupName, strGroupAvatar, nGroupType, setMember);
       msgResp.set_user_id(nUserId);
@@ -65,7 +54,7 @@ void createGroup(CImPdu *pPdu, uint32_t conn_uuid)
         msgResp.set_result_code(1);
       }
 
-      // log("createGroup.%d create %s, userCnt=%u, result:%d", nUserId, strGroupName.c_str(), setMember.size(), msgResp.result_code());
+      printf("createGroup.%d create %s, userCnt=%ld, result:%d", nUserId, strGroupName.c_str(), setMember.size(), msgResp.result_code());
 
       msgResp.set_attach_data(msg.attach_data());
       pPduRes->SetPBMsg(&msgResp);
@@ -76,12 +65,12 @@ void createGroup(CImPdu *pPdu, uint32_t conn_uuid)
     }
     else
     {
-      // log("invalid group type.userId=%u, groupType=%u, groupName=%s", nUserId, nGroupType, strGroupName.c_str());
+      printf("invalid group type.userId=%u, groupType=%u, groupName=%s\n", nUserId, nGroupType, strGroupName.c_str());
     }
   }
   else
   {
-    // log("parse pb failed");
+    printf("parse pb failed\n");
   }
 }
 
@@ -111,7 +100,7 @@ void getNormalGroupList(CImPdu *pPdu, uint32_t conn_uuid)
       pGroupVersion->set_version(it->version());
     }
 
-    // log("getNormalGroupList. userId=%u, count=%d", nUserId, msgResp.group_version_list_size());
+    printf("getNormalGroupList. userId=%u, count=%d\n", nUserId, msgResp.group_version_list_size());
 
     msgResp.set_attach_data(msg.attach_data());
     pPduRes->SetPBMsg(&msgResp);
@@ -122,7 +111,7 @@ void getNormalGroupList(CImPdu *pPdu, uint32_t conn_uuid)
   }
   else
   {
-    // log("parse pb failed");
+    printf("parse pb failed\n");
   }
 }
 
@@ -174,7 +163,7 @@ void getGroupInfo(CImPdu *pPdu, uint32_t conn_uuid)
       }
     }
 
-    // log("userId=%u, requestCount=%u", nUserId, nGroupCnt);
+    printf("userId=%u, requestCount=%u\n", nUserId, nGroupCnt);
 
     msgResp.set_attach_data(msg.attach_data());
     pPduRes->SetPBMsg(&msgResp);
@@ -185,7 +174,7 @@ void getGroupInfo(CImPdu *pPdu, uint32_t conn_uuid)
   }
   else
   {
-    // log("parse pb failed");
+    printf("parse pb failed\n");
   }
 }
 /**
@@ -231,8 +220,8 @@ void modifyMember(CImPdu *pPdu, uint32_t conn_uuid)
           msgResp.add_cur_user_id_list(*it);
         }
       }
-      // log("userId=%u, groupId=%u, result=%u, changeCount:%u, currentCount=%u",nUserId, nGroupId,  bRet?0:1, msgResp.chg_user_id_list_size(),
-      // msgResp.cur_user_id_list_size());
+      printf("userId=%u, groupId=%u, result=%u, changeCount:%u, currentCount=%u\n", nUserId, nGroupId, bRet ? 0 : 1, msgResp.chg_user_id_list_size(),
+             msgResp.cur_user_id_list_size());
       msgResp.set_attach_data(msg.attach_data());
       pPduRes->SetPBMsg(&msgResp);
       pPduRes->SetSeqNum(pPdu->GetSeqNum());
@@ -242,12 +231,12 @@ void modifyMember(CImPdu *pPdu, uint32_t conn_uuid)
     }
     else
     {
-      // log("invalid groupModifyType or groupId. userId=%u, groupId=%u, groupModifyType=%u", nUserId, nGroupId, nType);
+      printf("invalid groupModifyType or groupId. userId=%u, groupId=%u, groupModifyType=%u\n", nUserId, nGroupId, nType);
     }
   }
   else
   {
-    // log("parse pb failed");
+    printf("parse pb failed\n");
   }
 }
 
@@ -275,7 +264,7 @@ void setGroupPush(CImPdu *pPdu, uint32_t conn_uuid)
       msgResp.set_group_id(nGroupId);
       msgResp.set_result_code(bRet ? 0 : 1);
 
-      // log("userId=%u, groupId=%u, result=%u", nUserId, nGroupId, msgResp.result_code());
+      printf("userId=%u, groupId=%u, result=%u\n", nUserId, nGroupId, msgResp.result_code());
 
       msgResp.set_attach_data(msg.attach_data());
       pPduRes->SetPBMsg(&msgResp);
@@ -286,12 +275,12 @@ void setGroupPush(CImPdu *pPdu, uint32_t conn_uuid)
     }
     else
     {
-      // log("Invalid group.userId=%u, groupId=%u", nUserId, nGroupId);
+      printf("Invalid group.userId=%u, groupId=%u\n", nUserId, nGroupId);
     }
   }
   else
   {
-    // log("parse pb failed");
+    printf("parse pb failed\n");
   }
 }
 
@@ -330,7 +319,7 @@ void getGroupPush(CImPdu *pPdu, uint32_t conn_uuid)
         pStatus->set_shield_status(it->shield_status());
       }
 
-      // log("groupId=%u, count=%u", nGroupId, nUserCnt);
+      printf("groupId=%u, count=%u\n", nGroupId, nUserCnt);
 
       msgResp.set_attach_data(msg.attach_data());
       pPduRes->SetPBMsg(&msgResp);
@@ -341,12 +330,12 @@ void getGroupPush(CImPdu *pPdu, uint32_t conn_uuid)
     }
     else
     {
-      // log("Invalid groupId. nGroupId=%u", nGroupId);
+      printf("Invalid groupId. nGroupId=%u\n", nGroupId);
     }
   }
   else
   {
-    // log("parse pb failed");
+    printf("parse pb failed\n");
   }
 }
 }  // namespace DB_PROXY

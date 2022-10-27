@@ -1,13 +1,3 @@
-/*================================================================
-*     Copyright (c) 2015年 lanhu. All rights reserved.
-*
-*   文件名称：DepartAction.cpp
-*   创 建 者：Zhang Yuanhao
-*   邮    箱：bluefoxah@gmail.com
-*   创建日期：2015年03月13日
-*   描    述：
-*
-================================================================*/
 #include "DepartAction.h"
 #include "../ProxyConn.h"
 #include "DepartModel.h"
@@ -41,7 +31,7 @@ void getChgedDepart(CImPdu *pPdu, uint32_t conn_uuid)
       pDeptInfo->set_parent_dept_id(it->parent_dept_id());
       pDeptInfo->set_dept_status(it->dept_status());
     }
-    // log("userId=%u, last_update=%u, cnt=%u", nUserId, nLastUpdate, lsDeparts.size());
+    printf("userId=%u, last_update=%u, cnt=%ld\n", nUserId, nLastUpdate, lsDeparts.size());
     msgResp.set_attach_data(msg.attach_data());
     pPduRes->SetPBMsg(&msgResp);
     pPduRes->SetSeqNum(pPdu->GetSeqNum());
@@ -51,7 +41,7 @@ void getChgedDepart(CImPdu *pPdu, uint32_t conn_uuid)
   }
   else
   {
-    // log("parse pb failed");
+    printf("parse pb failed\n");
   }
 }
 }  // namespace DB_PROXY

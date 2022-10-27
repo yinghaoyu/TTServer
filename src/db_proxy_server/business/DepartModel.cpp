@@ -1,13 +1,3 @@
-/*================================================================
-*     Copyright (c) 2015年 lanhu. All rights reserved.
-*
-*   文件名称：DepartModel.cpp
-*   创 建 者：Zhang Yuanhao
-*   邮    箱：bluefoxah@gmail.com
-*   创建日期：2015年03月12日
-*   描    述：
-*
-================================================================*/
 #include "DepartModel.h"
 #include "../DBPool.h"
 
@@ -48,7 +38,7 @@ void CDepartModel::getChgedDeptId(uint32_t &nLastTime, list<uint32_t> &lsChanged
   }
   else
   {
-    // log("no db connection for teamtalk_slave.");
+    printf("no db connection for teamtalk_slave.\n");
   }
 }
 
@@ -56,7 +46,7 @@ void CDepartModel::getDepts(list<uint32_t> &lsDeptIds, list<IM::BaseDefine::Depa
 {
   if (lsDeptIds.empty())
   {
-    // log("list is empty");
+    printf("list is empty\n");
     return;
   }
   CDBManager *pDBManager = CDBManager::getInstance();
@@ -105,7 +95,7 @@ void CDepartModel::getDepts(list<uint32_t> &lsDeptIds, list<IM::BaseDefine::Depa
   }
   else
   {
-    // log("no db connection for teamtalk_slave");
+    printf("no db connection for teamtalk_slave\n");
   }
 }
 
@@ -141,6 +131,6 @@ void CDepartModel::getDept(uint32_t nDeptId, IM::BaseDefine::DepartInfo &cDept)
   }
   else
   {
-    // log("no db connection for teamtalk_slave");
+    printf("no db connection for teamtalk_slave\n");
   }
 }

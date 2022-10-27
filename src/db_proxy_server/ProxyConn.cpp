@@ -27,12 +27,19 @@ void proxy_timer_callback(void *callback_data, uint8_t msg, uint32_t handle, voi
     CProxyConn *pConn = (CProxyConn *) it_old->second;
     pConn->OnTimer(cur_time);
   }
+  (void) callback_data;
+  (void) msg;
+  (void) handle;
+  (void) pParam;
 }
 
-//
 void proxy_loop_callback(void *callback_data, uint8_t msg, uint32_t handle, void *pParam)
 {
   CProxyConn::SendResponsePduList();
+  (void) callback_data;
+  (void) msg;
+  (void) handle;
+  (void) pParam;
 }
 
 /*
@@ -43,7 +50,11 @@ void proxy_loop_callback(void *callback_data, uint8_t msg, uint32_t handle, void
  */
 void exit_callback(void *callback_data, uint8_t msg, uint32_t handle, void *pParam)
 {
-  // log("exit_callback...");
+  printf("exit_callback...\n");
+  (void) callback_data;
+  (void) msg;
+  (void) handle;
+  (void) pParam;
   exit(0);
 }
 
@@ -51,7 +62,7 @@ static void sig_handler(int sig_no)
 {
   if (sig_no == SIGTERM)
   {
-    // log("receive SIGTERM, prepare for exit");
+    printf("receive SIGTERM, prepare for exit\n");
     CImPdu cPdu;
     IM::Server::IMStopReceivePacket msg;
     msg.set_result(0);
@@ -63,7 +74,6 @@ static void sig_handler(int sig_no)
       CProxyConn *pConn = (CProxyConn *) it->second;
       pConn->SendPdu(&cPdu);
     }
-    // Add By ZhangYuanhao
     // Before stop we need to stop the sync thread,otherwise maybe will not sync the internal data any more
     CSyncCenter::getInstance()->stopSync();
 
@@ -96,7 +106,6 @@ CProxyConn *get_proxy_conn_by_uuid(uint32_t uuid)
   return pConn;
 }
 
-//////////////////////////
 CProxyConn::CProxyConn()
 {
   m_uuid = ++CProxyConn::s_uuid_alloctor;
@@ -134,7 +143,7 @@ void CProxyConn::OnConnect(net_handle_t handle)
   netlib_option(handle, NETLIB_OPT_GET_REMOTE_IP, (void *) &m_peer_ip);
   netlib_option(handle, NETLIB_OPT_GET_REMOTE_PORT, (void *) &m_peer_port);
 
-  // log("connect from %s:%d, handle=%d", m_peer_ip.c_str(), m_peer_port, m_handle);
+  printf("connect from %s:%d, handle=%d\n", m_peer_ip.c_str(), m_peer_port, m_handle);
 }
 
 // 由于数据包是在另一个线程处理的，所以不能在主线程delete数据包，所以需要Override这个方法
@@ -166,7 +175,7 @@ void CProxyConn::OnRead()
   }
   catch (CPduException &ex)
   {
-    // log("!!!catch exception, err_code=%u, err_msg=%s, close the connection ", ex.GetErrorCode(), ex.GetErrorMsg());
+    printf("!!!catch exception, err_code=%u, err_msg=%s, close the connection\n", ex.GetErrorCode(), ex.GetErrorMsg());
     OnClose();
   }
 }
@@ -190,7 +199,7 @@ void CProxyConn::OnTimer(uint64_t curr_tick)
 
   if (curr_tick > m_last_recv_tick + SERVER_TIMEOUT)
   {
-    // log("proxy connection timeout %s:%d", m_peer_ip.c_str(), m_peer_port);
+    printf("proxy connection timeout %s:%d\n", m_peer_ip.c_str(), m_peer_port);
     Close();
   }
 }
@@ -213,7 +222,7 @@ void CProxyConn::HandlePduBuf(uchar_t *pdu_buf, uint32_t pdu_len)
   }
   else
   {
-    // log("no handler for packet type: %d", pPdu->GetCommandId());
+    printf("no handler for packet type: %d\n", pPdu->GetCommandId());
   }
 }
 
@@ -252,7 +261,7 @@ void CProxyConn::SendResponsePduList()
       }
       else
       {
-        // log("close connection uuid=%d by parse pdu error\b", pResp->conn_uuid);
+        printf("close connection uuid=%d by parse pdu error\b\n", pResp->conn_uuid);
         pConn->Close();
       }
     }

@@ -551,15 +551,16 @@ void CGroupModel::getGroupVersion(list<uint32_t> &lsGroupId, list<IM::BaseDefine
   }
 }
 
-bool CGroupModel::isInGroup(uint32_t nUserId, uint32_t nGroupId)
+// 从redis中检查用户是否在群组内
+bool CGroupModel::isInGroup(uint32_t userId, uint32_t groupId)
 {
   bool bRet = false;
   CacheManager *pCacheManager = CacheManager::getInstance();
   CacheConn *pCacheConn = pCacheManager->GetCacheConn("group_member");
   if (pCacheConn)
   {
-    string strKey = "group_member_" + int2string(nGroupId);
-    string strField = int2string(nUserId);
+    string strKey = "group_member_" + int2string(groupId);
+    string strField = int2string(userId);
     string strValue = pCacheConn->hget(strKey, strField);
     pCacheManager->RelCacheConn(pCacheConn);
     if (!strValue.empty())
@@ -569,7 +570,7 @@ bool CGroupModel::isInGroup(uint32_t nUserId, uint32_t nGroupId)
   }
   else
   {
-    // log("no cache connection for group_member");
+    printf("no cache connection for group_member\n");
   }
   return bRet;
 }

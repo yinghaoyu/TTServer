@@ -1,13 +1,3 @@
-/*================================================================
-*     Copyright (c) 2014年 lanhu. All rights reserved.
-*
-*   文件名称：CacheManager.cpp
-*   创 建 者：Zhang Yuanhao
-*   邮    箱：bluefoxah@gmail.com
-*   创建日期：2014年12月02日
-*   描    述：
-*
-================================================================*/
 #include "SyncCenter.h"
 #include <stdlib.h>
 #include <sys/signal.h>
@@ -26,11 +16,7 @@ static CRWLock *g_pRWDeptLock = new CRWLock();
 
 CSyncCenter *CSyncCenter::m_pInstance = NULL;
 bool CSyncCenter::m_bSyncGroupChatRuning = false;
-/**
- *  单例
- *
- *  @return 返回CSyncCenter的单例指针
- */
+
 CSyncCenter *CSyncCenter::getInstance()
 {
   CAutoLock autoLock(g_pLock);
@@ -41,18 +27,12 @@ CSyncCenter *CSyncCenter::getInstance()
   return m_pInstance;
 }
 
-/**
- *  构造函数
- */
-CSyncCenter::CSyncCenter() : m_nGroupChatThreadId(0), m_nLastUpdateGroup(time(NULL)), m_bSyncGroupChatWaitting(true), m_pLockGroupChat(new CLock())
+CSyncCenter::CSyncCenter() : m_nLastUpdateGroup(time(NULL)), m_pLockGroupChat(new CLock()), m_bSyncGroupChatWaitting(true), m_nGroupChatThreadId(0)
 // m_pLock(new CLock())
 {
   m_pCondGroupChat = new CCondition(m_pLockGroupChat);
 }
 
-/**
- *  析构函数
- */
 CSyncCenter::~CSyncCenter()
 {
   if (m_pLockGroupChat != NULL)
@@ -146,7 +126,7 @@ void CSyncCenter::init()
   }
   else
   {
-    // log("no cache connection to get total_user_updated");
+    printf("no cache connection to get total_user_updated\n");
   }
 }
 /**
@@ -170,7 +150,7 @@ void CSyncCenter::updateTotalUpdate(uint32_t nUpdated)
   }
   else
   {
-    // log("no cache connection to get total_user_updated");
+    printf("no cache connection to get total_user_updated\n");
   }
 }
 
@@ -195,7 +175,7 @@ void CSyncCenter::updateLastUpdateGroup(uint32_t nUpdated)
   }
   else
   {
-    // log("no cache connection to get total_user_updated");
+    printf("no cache connection to get total_user_updated\n");
   }
 }
 
@@ -236,7 +216,7 @@ void *CSyncCenter::doSyncGroupChat(void *arg)
     }
     else
     {
-      // log("no db connection for teamtalk_slave");
+      printf("no db connection for teamtalk_slave\n");
     }
     m_pInstance->updateLastUpdateGroup(time(NULL));
     for (auto it = mapChangedGroup.begin(); it != mapChangedGroup.end(); ++it)

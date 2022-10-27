@@ -1,53 +1,46 @@
-/*================================================================
- *   Copyright (C) 2014 All rights reserved.
- *
- *   文件名称：GroupMessageModel.h
- *   创 建 者：Zhang Yuanhao
- *   邮    箱：bluefoxah@gmail.com
- *   创建日期：2014年12月15日
- *   描    述：
- *
- ================================================================*/
-
 #ifndef GROUP_MESSAGE_MODEL_H_
 #define GROUP_MESSAGE_MODEL_H_
 
 #include <list>
 #include <string>
 
-#include "util.h"
-#include "ImPduBase.h"
 #include "AudioModel.h"
 #include "GroupModel.h"
 #include "IM.BaseDefine.pb.h"
+#include "ImPduBase.h"
+#include "util.h"
 
 using namespace std;
 
+class CGroupMessageModel
+{
+ public:
+  virtual ~CGroupMessageModel();
+  static CGroupMessageModel *getInstance();
 
-class CGroupMessageModel {
-public:
-	virtual ~CGroupMessageModel();
-	static CGroupMessageModel* getInstance();
-    
-    bool sendMessage(uint32_t nFromId, uint32_t nGroupId, IM::BaseDefine::MsgType nMsgType, uint32_t nCreateTime, uint32_t nMsgId, const string& strMsgContent);
-    bool sendAudioMessage(uint32_t nFromId, uint32_t nGroupId, IM::BaseDefine::MsgType nMsgType, uint32_t nCreateTime, uint32_t nMsgId,const char* pMsgContent, uint32_t nMsgLen);
-    void getMessage(uint32_t nUserId, uint32_t nGroupId, uint32_t nMsgId, uint32_t nMsgCnt,
-                    list<IM::BaseDefine::MsgInfo>& lsMsg);
-    bool clearMessageCount(uint32_t nUserId, uint32_t nGroupId);
-    uint32_t getMsgId(uint32_t nGroupId);
-    void getUnreadMsgCount(uint32_t nUserId, uint32_t &nTotalCnt, list<IM::BaseDefine::UnreadInfo>& lsUnreadCount);
-    void getLastMsg(uint32_t nGroupId, uint32_t& nMsgId, string& strMsgData, IM::BaseDefine::MsgType & nMsgType, uint32_t& nFromId);
-    void getUnReadCntAll(uint32_t nUserId, uint32_t &nTotalCnt);
-    void getMsgByMsgId(uint32_t nUserId, uint32_t nGroupId, const list<uint32_t>& lsMsgId, list<IM::BaseDefine::MsgInfo>& lsMsg);
-    bool resetMsgId(uint32_t nGroupId);
-private:
-    CGroupMessageModel();
-    bool incMessageCount(uint32_t nUserId, uint32_t nGroupId);
+  bool sendMessage(uint32_t fromId, uint32_t groupId, IM::BaseDefine::MsgType msgType, uint32_t createTime, uint32_t msgId, const string &msgContent);
+  bool sendAudioMessage(uint32_t fromId,
+                        uint32_t groupId,
+                        IM::BaseDefine::MsgType msgType,
+                        uint32_t createTime,
+                        uint32_t msgId,
+                        const char *msgContent,
+                        uint32_t msgLen);
+  void getMessage(uint32_t userId, uint32_t groupId, uint32_t msgId, uint32_t msgCnt, list<IM::BaseDefine::MsgInfo> &lsMsg);
+  bool clearMessageCount(uint32_t userId, uint32_t groupId);
+  uint32_t getMsgId(uint32_t groupId);
+  void getUnreadMsgCount(uint32_t userId, uint32_t &totalCnt, list<IM::BaseDefine::UnreadInfo> &unreadCount);
+  void getLastMsg(uint32_t groupId, uint32_t &msgId, string &strMsgData, IM::BaseDefine::MsgType &msgType, uint32_t &fromId);
+  void getUnReadCntAll(uint32_t userId, uint32_t &totalCnt);
+  void getMsgByMsgId(uint32_t userId, uint32_t groupId, const list<uint32_t> &msgIds, list<IM::BaseDefine::MsgInfo> &messages);
+  bool resetMsgId(uint32_t groupId);
 
-private:
-	static CGroupMessageModel*	m_pInstance;
+ private:
+  CGroupMessageModel();
+  bool incMessageCount(uint32_t userId, uint32_t groupId);
+
+ private:
+  static CGroupMessageModel *m_pInstance;
 };
-
-
 
 #endif /* MESSAGE_MODEL_H_ */

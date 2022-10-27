@@ -1,14 +1,3 @@
-/*================================================================
- *   Copyright (C) 2014 All rights reserved.
- *
- *   文件名称：UserAction.cpp
- *   创 建 者：Zhang Yuanhao
- *   邮    箱：bluefoxah@gmail.com
- *   创建日期：2014年12月15日
- *   描    述：
- *
- ================================================================*/
-
 #include <list>
 #include <map>
 
@@ -59,7 +48,7 @@ void getUserInfo(CImPdu *pPdu, uint32_t conn_uuid)
       pUser->set_user_domain(it->user_domain());
       pUser->set_status(it->status());
     }
-    // log("userId=%u, userCnt=%u", from_user_id, userCount);
+    printf("userId=%u, userCnt=%u\n", from_user_id, userCount);
     msgResp.set_attach_data(msg.attach_data());
     pPduRes->SetPBMsg(&msgResp);
     pPduRes->SetSeqNum(pPdu->GetSeqNum());
@@ -69,7 +58,7 @@ void getUserInfo(CImPdu *pPdu, uint32_t conn_uuid)
   }
   else
   {
-    // log("parse pb failed");
+    printf("parse pb failed\n");
   }
 }
 
@@ -110,7 +99,7 @@ void getChangedUser(CImPdu *pPdu, uint32_t conn_uuid)
       pUser->set_user_domain(it->user_domain());
       pUser->set_status(it->status());
     }
-    // log("userId=%u,nLastUpdate=%u, last_time=%u, userCnt=%u", nReqId,nLastUpdate, nLastTime, msgResp.user_list_size());
+    printf("userId=%u,nLastUpdate=%u, last_time=%u, userCnt=%u\n", nReqId, nLastUpdate, nLastTime, msgResp.user_list_size());
     msgResp.set_attach_data(msg.attach_data());
     pPduRes->SetPBMsg(&msgResp);
     pPduRes->SetSeqNum(pPdu->GetSeqNum());
@@ -120,7 +109,7 @@ void getChangedUser(CImPdu *pPdu, uint32_t conn_uuid)
   }
   else
   {
-    // log("parse pb failed");
+    printf("parse pb failed\n");
   }
 }
 
@@ -140,11 +129,11 @@ void changeUserSignInfo(CImPdu *pPdu, uint32_t conn_uuid)
     if (result)
     {
       resp.set_sign_info(sign_info);
-      // log("changeUserSignInfo sucess, user_id=%u, sign_info=%s", user_id, sign_info.c_str());
+      printf("changeUserSignInfo sucess, user_id=%u, sign_info=%s\n", user_id, sign_info.c_str());
     }
     else
     {
-      // log("changeUserSignInfo false, user_id=%u, sign_info=%s", user_id, sign_info.c_str());
+      printf("changeUserSignInfo false, user_id=%u, sign_info=%s\n", user_id, sign_info.c_str());
     }
 
     CImPdu *pdu_resp = new CImPdu();
@@ -157,7 +146,7 @@ void changeUserSignInfo(CImPdu *pPdu, uint32_t conn_uuid)
   }
   else
   {
-    // log("changeUserSignInfo: IMChangeSignInfoReq ParseFromArray failed!!!");
+    printf("changeUserSignInfo: IMChangeSignInfoReq ParseFromArray failed!!!\n");
   }
 }
 void doPushShield(CImPdu *pPdu, uint32_t conn_uuid)
@@ -177,11 +166,11 @@ void doPushShield(CImPdu *pPdu, uint32_t conn_uuid)
     if (result)
     {
       resp.set_shield_status(shield_status);
-      // log("doPushShield sucess, user_id=%u, shield_status=%u", user_id, shield_status);
+      printf("doPushShield sucess, user_id=%u, shield_status=%u\n", user_id, shield_status);
     }
     else
     {
-      // log("doPushShield false, user_id=%u, shield_status=%u", user_id, shield_status);
+      printf("doPushShield false, user_id=%u, shield_status=%u\n", user_id, shield_status);
     }
 
     CImPdu *pdu_resp = new CImPdu();
@@ -194,7 +183,7 @@ void doPushShield(CImPdu *pPdu, uint32_t conn_uuid)
   }
   else
   {
-    // log("doPushShield: IMPushShieldReq ParseFromArray failed!!!");
+    printf("doPushShield: IMPushShieldReq ParseFromArray failed!!!\n");
   }
 }
 
@@ -214,11 +203,11 @@ void doQueryPushShield(CImPdu *pPdu, uint32_t conn_uuid)
     if (result)
     {
       resp.set_shield_status(shield_status);
-      // log("doQueryPushShield sucess, user_id=%u, shield_status=%u", user_id, shield_status);
+      printf("doQueryPushShield sucess, user_id=%u, shield_status=%u\n", user_id, shield_status);
     }
     else
     {
-      // log("doQueryPushShield false, user_id=%u", user_id);
+      printf("doQueryPushShield false, user_id=%u\n", user_id);
     }
 
     CImPdu *pdu_resp = new CImPdu();
@@ -231,7 +220,7 @@ void doQueryPushShield(CImPdu *pPdu, uint32_t conn_uuid)
   }
   else
   {
-    // log("doQueryPushShield: IMQueryPushShieldReq ParseFromArray failed!!!");
+    printf("doQueryPushShield: IMQueryPushShieldReq ParseFromArray failed!!!\n");
   }
 }
 };  // namespace DB_PROXY
