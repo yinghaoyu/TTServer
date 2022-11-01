@@ -59,7 +59,6 @@ string CSyncCenter::getDeptName(uint32_t nDeptId)
   CAutoRWLock autoLock(g_pRWDeptLock);
   string strDeptName;
   DBDeptInfo_t *pDept = NULL;
-  ;
   getDept(nDeptId, &pDept);
   if (pDept != NULL)
   {
