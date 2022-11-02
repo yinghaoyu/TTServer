@@ -1,10 +1,3 @@
-/*
- * HttpConn.cpp
- *
- *  Created on: 2013-9-29
- *      Author: ziteng@mogujie.com
- */
-
 #include "HttpConn.h"
 #include "HttpParserWrapper.h"
 #include "ipparser.h"

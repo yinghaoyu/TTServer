@@ -1,10 +1,3 @@
-/*
- * LoginConn.cpp
- *
- *  Created on: 2013-6-21
- *      Author: ziteng@mogujie.com
- */
-
 #include "LoginConn.h"
 #include "IM.Login.pb.h"
 #include "IM.Other.pb.h"
@@ -19,6 +12,7 @@ map<uint32_t, msg_serv_info_t *> g_msg_serv_info;
 void login_conn_timer_callback(void *callback_data, uint8_t msg, uint32_t handle, void *pParam)
 {
   uint64_t cur_time = get_tick_count();
+  // 调用每个客户端连接的时间函数
   for (ConnMap_t::iterator it = g_client_conn_map.begin(); it != g_client_conn_map.end();)
   {
     ConnMap_t::iterator it_old = it;
@@ -27,7 +21,7 @@ void login_conn_timer_callback(void *callback_data, uint8_t msg, uint32_t handle
     CLoginConn *pConn = (CLoginConn *) it_old->second;
     pConn->OnTimer(cur_time);
   }
-
+  // 调用每个消息服务端的时间函数
   for (ConnMap_t::iterator it = g_msg_serv_conn_map.begin(); it != g_msg_serv_conn_map.end();)
   {
     ConnMap_t::iterator it_old = it;
@@ -40,6 +34,7 @@ void login_conn_timer_callback(void *callback_data, uint8_t msg, uint32_t handle
 
 void init_login_conn()
 {
+  // 为客户端和消息服务端的连接注册超时处理
   netlib_register_timer(login_conn_timer_callback, NULL, 1000);
 }
 
@@ -51,23 +46,25 @@ void CLoginConn::Close()
 {
   if (m_handle != NETLIB_INVALID_HANDLE)
   {
+    // close socket
     netlib_close(m_handle);
     if (m_conn_type == LOGIN_CONN_TYPE_CLIENT)
     {
+      // 清除客户端映射表
       g_client_conn_map.erase(m_handle);
     }
     else
     {
       g_msg_serv_conn_map.erase(m_handle);
 
-      // remove all user count from this message server
+      // 把所有客户端连接信息从这个消息服务器里面剔除
       map<uint32_t, msg_serv_info_t *>::iterator it = g_msg_serv_info.find(m_handle);
       if (it != g_msg_serv_info.end())
       {
         msg_serv_info_t *pMsgServInfo = it->second;
 
         g_total_online_user_cnt -= pMsgServInfo->cur_conn_cnt;
-        // log("onclose from MsgServer: %s:%u ", pMsgServInfo->hostname.c_str(), pMsgServInfo->port);
+        printf("onclose from MsgServer: %s:%u\n", pMsgServInfo->hostname.c_str(), pMsgServInfo->port);
         delete pMsgServInfo;
         g_msg_serv_info.erase(it);
       }
@@ -103,6 +100,7 @@ void CLoginConn::OnTimer(uint64_t curr_tick)
 {
   if (m_conn_type == LOGIN_CONN_TYPE_CLIENT)
   {
+    // 客户端连接超时，则关闭这个连接
     if (curr_tick > m_last_recv_tick + CLIENT_TIMEOUT)
     {
       Close();
@@ -110,6 +108,7 @@ void CLoginConn::OnTimer(uint64_t curr_tick)
   }
   else
   {
+    // 往消息服务器发送心跳包
     if (curr_tick > m_last_send_tick + SERVER_HEARTBEAT_INTERVAL)
     {
       IM::Other::IMHeartBeat msg;
@@ -120,9 +119,10 @@ void CLoginConn::OnTimer(uint64_t curr_tick)
       SendPdu(&pdu);
     }
 
+    // 消息服务端超时，则关闭这个连接
     if (curr_tick > m_last_recv_tick + SERVER_TIMEOUT)
     {
-      // log("connection to MsgServer timeout ");
+      printf("connection to MsgServer timeout\n");
       Close();
     }
   }
@@ -152,6 +152,7 @@ void CLoginConn::HandlePdu(CImPdu *pPdu)
 
 void CLoginConn::_HandleMsgServInfo(CImPdu *pPdu)
 {
+  // 接收消息服务器上报的信息
   msg_serv_info_t *pMsgServInfo = new msg_serv_info_t;
   IM::Server::IMMsgServInfo msg;
   msg.ParseFromArray(pPdu->GetBodyData(), pPdu->GetBodyLength());
@@ -166,14 +167,13 @@ void CLoginConn::_HandleMsgServInfo(CImPdu *pPdu)
 
   g_total_online_user_cnt += pMsgServInfo->cur_conn_cnt;
 
-  // log("MsgServInfo, ip_addr1=%s, ip_addr2=%s, port=%d, max_conn_cnt=%d, cur_conn_cnt=%d, "
-  //"hostname: %s. ",
-  // pMsgServInfo->ip_addr1.c_str(), pMsgServInfo->ip_addr2.c_str(), pMsgServInfo->port, pMsgServInfo->max_conn_cnt, pMsgServInfo->cur_conn_cnt,
-  // pMsgServInfo->hostname.c_str());
+  printf("MsgServInfo, ip_addr1=%s, ip_addr2=%s, port=%d, max_conn_cnt=%d, cur_conn_cnt=%d, hostname: %s.\n", pMsgServInfo->ip_addr1.c_str(),
+         pMsgServInfo->ip_addr2.c_str(), pMsgServInfo->port, pMsgServInfo->max_conn_cnt, pMsgServInfo->cur_conn_cnt, pMsgServInfo->hostname.c_str());
 }
 
 void CLoginConn::_HandleUserCntUpdate(CImPdu *pPdu)
 {
+  // 统计客户端在线、离线数量
   map<uint32_t, msg_serv_info_t *>::iterator it = g_msg_serv_info.find(m_handle);
   if (it != g_msg_serv_info.end())
   {
@@ -193,7 +193,7 @@ void CLoginConn::_HandleUserCntUpdate(CImPdu *pPdu)
       g_total_online_user_cnt--;
     }
 
-    // log("%s:%d, cur_cnt=%u, total_cnt=%u ", pMsgServInfo->hostname.c_str(), pMsgServInfo->port, pMsgServInfo->cur_conn_cnt, g_total_online_user_cnt);
+    printf("%s:%d, cur_cnt=%u, total_cnt=%u\n", pMsgServInfo->hostname.c_str(), pMsgServInfo->port, pMsgServInfo->cur_conn_cnt, g_total_online_user_cnt);
   }
 }
 
@@ -202,7 +202,7 @@ void CLoginConn::_HandleMsgServRequest(CImPdu *pPdu)
   IM::Login::IMMsgServReq msg;
   msg.ParseFromArray(pPdu->GetBodyData(), pPdu->GetBodyLength());
 
-  // log("HandleMsgServReq. ");
+  printf("HandleMsgServReq.\n");
 
   // no MessageServer available
   if (g_msg_serv_info.size() == 0)
@@ -219,7 +219,7 @@ void CLoginConn::_HandleMsgServRequest(CImPdu *pPdu)
     return;
   }
 
-  // return a message server with minimum concurrent connection count
+  // 找出一个压力最小的消息服务器
   msg_serv_info_t *pMsgServInfo;
   uint32_t min_user_cnt = (uint32_t) -1;
   map<uint32_t, msg_serv_info_t *>::iterator it_min_conn = g_msg_serv_info.end(), it;
@@ -236,7 +236,8 @@ void CLoginConn::_HandleMsgServRequest(CImPdu *pPdu)
 
   if (it_min_conn == g_msg_serv_info.end())
   {
-    // log("All TCP MsgServer are full ");
+    // 所有消息服务器满载
+    printf("All TCP MsgServer are full\n");
     IM::Login::IMMsgServRsp msg;
     msg.set_result_code(::IM::BaseDefine::REFUSE_REASON_MSG_SERVER_FULL);
     CImPdu pdu;
@@ -248,6 +249,7 @@ void CLoginConn::_HandleMsgServRequest(CImPdu *pPdu)
   }
   else
   {
+    // 告知消息服务器的ip地址及端口号
     IM::Login::IMMsgServRsp msg;
     msg.set_result_code(::IM::BaseDefine::REFUSE_REASON_NONE);
     msg.set_prior_ip(it_min_conn->second->ip_addr1);

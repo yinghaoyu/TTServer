@@ -1,10 +1,3 @@
-/*
- * login_server.cpp
- *
- *  Created on: 2013-6-21
- *      Author: ziteng@mogujie.com
- */
-
 #include "ConfigFileReader.h"
 #include "HttpConn.h"
 #include "LoginConn.h"
