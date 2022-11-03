@@ -1,15 +1,3 @@
-/*================================================================
- *   Copyright (C) 2014 All rights reserved.
- *
- *   @       File              :  main.cpp
- *   @       Author      :  Zhang Yuanhao
- *   @       Email         :  bluefoxah@gmail.com
- *   @       Date           :  2014年7月29日
- *   @       Version     :   1.0
- *   @  Description	:
- *
- ================================================================*/
-
 #include <signal.h>
 #include <iostream>
 #include "ConfigFileReader.h"
@@ -91,7 +79,7 @@ void http_callback(void *callback_data, uint8_t msg, uint32_t handle, void *pPar
   }
   else
   {
-    // log("!!!error msg: %d", msg);
+    printf("!!!error msg: %d\n", msg);
   }
 }
 
@@ -102,11 +90,11 @@ void doQuitJob()
   config_file.SetConfigValue("FileCnt", fileCntBuf);
   FileManager::destroyInstance();
   netlib_destroy();
-  // log("I'm ready quit...");
+  printf("I'm ready quit...\n");
 }
 void Stop(int signo)
 {
-  // log("receive signal:%d", signo);
+  printf("receive signal:%d\n", signo);
   switch (signo)
   {
   case SIGINT:
@@ -134,7 +122,7 @@ int main(int argc, char *argv[])
       break;
     }
   }
-  // log("MsgServer max files can open: %d", getdtablesize());
+  printf("MsgServer max files can open: %d\n", getdtablesize());
 
   char *listen_ip = config_file.GetConfigName("ListenIP");
   char *str_listen_port = config_file.GetConfigName("ListenPort");
@@ -146,11 +134,11 @@ int main(int argc, char *argv[])
 
   if (!listen_ip || !str_listen_port || !base_dir || !str_file_cnt || !str_files_per_dir || !str_post_thread_count || !str_get_thread_count)
   {
-    // log("config file miss, exit...");
+    printf("config file miss, exit...\n");
     return -1;
   }
 
-  // log("%s,%s", listen_ip, str_listen_port);
+  printf("%s,%s\n", listen_ip, str_listen_port);
   uint16_t listen_port = atoi(str_listen_port);
   long long int fileCnt = atoll(str_file_cnt);
   int filesPerDir = atoi(str_files_per_dir);
@@ -158,7 +146,7 @@ int main(int argc, char *argv[])
   int nGetThreadCount = atoi(str_get_thread_count);
   if (nPostThreadCount <= 0 || nGetThreadCount <= 0)
   {
-    // log("thread count is invalied");
+    printf("thread count is invalied\n");
     return -1;
   }
   g_PostThreadPool.Init(nPostThreadCount);

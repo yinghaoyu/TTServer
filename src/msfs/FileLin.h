@@ -1,9 +1,3 @@
-/*
- *  Multimdia Small File Storage Sytem
- *  File Operation In Linux System
- *  @author potian@mogujie.com
- */
-
 #ifndef _FILELIN_H_
 #define _FILELIN_H_
 

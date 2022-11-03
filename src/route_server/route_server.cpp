@@ -1,10 +1,3 @@
-/*
- * route_server.cpp
- *
- *  Created on: 2013-7-4
- *      Author: ziteng@mogujie.com
- */
-
 #include "ConfigFileReader.h"
 #include "RouteConn.h"
 #include "netlib.h"
@@ -20,7 +13,7 @@ void route_serv_callback(void *callback_data, uint8_t msg, uint32_t handle, void
   }
   else
   {
-    // log("!!!error msg: %d ", msg);
+    printf("!!!error msg: %d\n", msg);
   }
 }
 
@@ -43,7 +36,7 @@ int main(int argc, char *argv[])
 
   if (!listen_ip || !str_listen_msg_port)
   {
-    // log("config item missing, exit... ");
+    printf("config item missing, exit...\n");
     return -1;
   }
 

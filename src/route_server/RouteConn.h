@@ -1,10 +1,3 @@
-/*
- * RouteConn.h
- *
- *  Created on: 2013-7-4
- *      Author: ziteng@mogujie.com
- */
-
 #ifndef ROUTECONN_H_
 #define ROUTECONN_H_
 

@@ -1,11 +1,3 @@
-//
-//  UserInfo.cpp
-//  im-server-TT
-//
-//  Created by luoning on 14-10-23.
-//  Copyright (c) 2014年 luoning. All rights reserved.
-//
-
 #include "UserInfo.h"
 #include "IM.BaseDefine.pb.h"
 #include "ImPduBase.h"

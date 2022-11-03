@@ -1,14 +1,3 @@
-/*================================================================
- *   Copyright (C) 2014 All rights reserved.
- *
- *   文件名称：HttpConn.h
- *   创 建 者：Zhang Yuanhao
- *   邮    箱：bluefoxah@gmail.com
- *   创建日期：2014年07月29日
- *   描    述：
- *
- #pragma once
- ================================================================*/
 #ifndef __HTTP_CONN_H__
 #define __HTTP_CONN_H__
 

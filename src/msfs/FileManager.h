@@ -1,9 +1,3 @@
-/*
- * Multimedia Small File Storage System
- * FileManager Singleton to manager store or download file
- * author potian@mogujie.com
- */
-
 #ifndef _FILEMANAGER_H_
 #define _FILEMANAGER_H_
 

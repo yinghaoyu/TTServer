@@ -1,10 +1,3 @@
-/*
- * RouteConn.cpp
- *
- *  Created on: 2013-7-4
- *      Author: ziteng@mogujie.com
- */
-
 #include "RouteConn.h"
 #include "IM.Buddy.pb.h"
 #include "IM.Group.pb.h"
@@ -100,7 +93,7 @@ void CRouteConn::OnConnect(net_handle_t handle)
 
 void CRouteConn::OnClose()
 {
-  // log("MsgServer onclose: handle=%d ", m_handle);
+  printf("MsgServer onclose: handle=%d\n", m_handle);
   Close();
 }
 
@@ -118,7 +111,7 @@ void CRouteConn::OnTimer(uint64_t curr_tick)
 
   if (curr_tick > m_last_recv_tick + SERVER_TIMEOUT)
   {
-    // log("message server timeout ");
+    printf("message server timeout\n");
     Close();
   }
 }
@@ -156,7 +149,7 @@ void CRouteConn::HandlePdu(CImPdu *pPdu)
     break;
 
   default:
-    // log("CRouteConn::HandlePdu, wrong cmd id: %d ", pPdu->GetCommandId());
+    printf("CRouteConn::HandlePdu, wrong cmd id: %d\n", pPdu->GetCommandId());
     break;
   }
 }
@@ -168,7 +161,7 @@ void CRouteConn::_HandleOnlineUserInfo(CImPdu *pPdu)
 
   uint32_t user_count = msg.user_stat_list_size();
 
-  // log("HandleOnlineUserInfo, user_cnt=%u ", user_count);
+  printf("HandleOnlineUserInfo, user_cnt=%u\n", user_count);
 
   for (uint32_t i = 0; i < user_count; i++)
   {
@@ -185,7 +178,7 @@ void CRouteConn::_HandleUserStatusUpdate(CImPdu *pPdu)
   uint32_t user_status = msg.user_status();
   uint32_t user_id = msg.user_id();
   uint32_t client_type = msg.client_type();
-  // log("HandleUserStatusUpdate, status=%u, uid=%u, client_type=%u ", user_status, user_id, client_type);
+  printf("HandleUserStatusUpdate, status=%u, uid=%u, client_type=%u\n", user_status, user_id, client_type);
 
   _UpdateUserStatus(user_id, user_status, client_type);
 
@@ -266,7 +259,7 @@ void CRouteConn::_HandleRoleSet(CImPdu *pPdu)
 
   uint32_t master = msg.master();
 
-  // log("HandleRoleSet, master=%u, handle=%u ", master, m_handle);
+  printf("HandleRoleSet, master=%u, handle=%u\n", master, m_handle);
   if (master == 1)
   {
     m_bMaster = true;
@@ -284,7 +277,7 @@ void CRouteConn::_HandleUsersStatusRequest(CImPdu *pPdu)
 
   uint32_t request_id = msg.user_id();
   uint32_t query_count = msg.user_id_list_size();
-  // log("HandleUserStatusReq, req_id=%u, query_count=%u ", request_id, query_count);
+  printf("HandleUserStatusReq, req_id=%u, query_count=%u\n", request_id, query_count);
 
   IM::Buddy::IMUsersStatRsp msg2;
   msg2.set_user_id(request_id);
@@ -367,7 +360,7 @@ void CRouteConn::_UpdateUserStatus(uint32_t user_id, uint32_t status, uint32_t c
       }
       else
       {
-        // log("new UserInfo failed. ");
+        printf("new UserInfo failed.\n");
       }
     }
   }

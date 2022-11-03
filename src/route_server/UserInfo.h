@@ -1,13 +1,5 @@
-//
-//  UserInfo.h
-//  im-server-TT
-//
-//  Created by luoning on 14-10-23.
-//  Copyright (c) 2014年 luoning. All rights reserved.
-//
-
-#ifndef __im_server_TT__UserInfo__
-#define __im_server_TT__UserInfo__
+#ifndef __IM_SERVER_TT__USERINFO__
+#define __IM_SERVER_TT__USERINFO__
 
 #include <iostream>
 #include <map>
@@ -45,4 +37,4 @@ class CUserInfo
   map<uint32_t /* client_type */, uint32_t /* count */> m_ClientTypeList;
 };
 
-#endif /* defined(__im_server_TT__UserInfo__) */
+#endif

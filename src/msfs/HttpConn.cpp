@@ -1,14 +1,3 @@
-/*================================================================
- *   Copyright (C) 2014 All rights reserved.
- *
- *   文件名称：HttpConn.cpp
- *   创 建 者：Zhang Yuanhao
- *   邮    箱：bluefoxah@gmail.com
- *   创建日期：2014年07月29日
- *   描    述：
- *
- #include "HttpConn.h"
- ================================================================*/
 #include "HttpConn.h"
 #include "HttpParserWrapper.h"
 #include "atomic.h"
@@ -57,7 +46,7 @@ void httpconn_callback(void *callback_data, uint8_t msg, uint32_t handle, uint32
     pConn->OnClose();
     break;
   default:
-    // log("!!!httpconn_callback error msg: %d", msg);
+    printf("!!!httpconn_callback error msg: %d\n", msg);
     break;
   }
 }
@@ -88,8 +77,6 @@ void init_http_conn()
   netlib_register_timer(http_conn_timer_callback, NULL, 1000);
   netlib_add_loop(http_conn_loop_callback, NULL);
 }
-
-//////////////////////////
 
 CHttpTask::CHttpTask(Request_t request)
 {
@@ -158,7 +145,7 @@ void CHttpTask::OnUpload()
           {
             memcpy(szType, pPosType + 1, nTypeLen);
             szType[nTypeLen] = 0;
-            // log("upload file, file name:%s", szFileName);
+            printf("upload file, file name:%s\n", szFileName);
             char szExtend[16];
             const char *pPosExtend = memfind(szFileName, nFileNameLen, "_", 1, false);
             if (pPosExtend != NULL)
@@ -251,7 +238,7 @@ void CHttpTask::OnUpload()
                     {
                       char url[128];
                       snprintf(url, sizeof(url), "{\"error_code\":8,\"error_msg\": \"格式错误\",\"path\":\"\",\"url\":\"\"}");
-                      // log("%s", url);
+                      printf("%s\n", url);
                       uint32_t content_length = strlen(url);
                       pContent = new char[HTTP_RESPONSE_HTML_MAX];
                       snprintf(pContent, HTTP_RESPONSE_HTML_MAX, HTTP_RESPONSE_HTML, content_length, url);
@@ -262,7 +249,7 @@ void CHttpTask::OnUpload()
                   {
                     char url[128];
                     snprintf(url, sizeof(url), "{\"error_code\":7,\"error_msg\": \"格式错误\",\"path\":\"\",\"url\":\"\"}");
-                    // log("%s", url);
+                    printf("%s\n", url);
                     uint32_t content_length = strlen(url);
                     pContent = new char[HTTP_RESPONSE_HTML_MAX];
                     snprintf(pContent, HTTP_RESPONSE_HTML_MAX, HTTP_RESPONSE_HTML, content_length, url);
@@ -273,7 +260,7 @@ void CHttpTask::OnUpload()
                 {
                   char url[128];
                   snprintf(url, sizeof(url), "{\"error_code\":6,\"error_msg\": \"格式错误\",\"path\":\"\",\"url\":\"\"}");
-                  // log("%s", url);
+                  printf("%s\n", url);
                   uint32_t content_length = strlen(url);
                   pContent = new char[HTTP_RESPONSE_HTML_MAX];
                   snprintf(pContent, HTTP_RESPONSE_HTML_MAX, HTTP_RESPONSE_HTML, content_length, url);
@@ -284,7 +271,7 @@ void CHttpTask::OnUpload()
               {
                 char url[128];
                 snprintf(url, sizeof(url), "{\"error_code\":5,\"error_msg\": \"格式错误\",\"path\":\"\",\"url\":\"\"}");
-                // log("%s", url);
+                printf("%s\n", url);
                 uint32_t content_length = strlen(url);
                 pContent = new char[HTTP_RESPONSE_HTML_MAX];
                 snprintf(pContent, HTTP_RESPONSE_HTML_MAX, HTTP_RESPONSE_HTML, content_length, url);
@@ -295,7 +282,7 @@ void CHttpTask::OnUpload()
             {
               char url[128];
               snprintf(url, sizeof(url), "{\"error_code\":4,\"error_msg\": \"格式错误\",\"path\":\"\",\"url\":\"\"}");
-              // log("%s", url);
+              printf("%s\n", url);
               uint32_t content_length = strlen(url);
               pContent = new char[HTTP_RESPONSE_HTML_MAX];
               snprintf(pContent, HTTP_RESPONSE_HTML_MAX, HTTP_RESPONSE_HTML, content_length, url);
@@ -306,7 +293,7 @@ void CHttpTask::OnUpload()
           {
             char url[128];
             snprintf(url, sizeof(url), "{\"error_code\":9,\"error_msg\": \"格式错误\",\"path\":\"\",\"url\":\"\"}");
-            // log("%s", url);
+            printf("%s\n", url);
             uint32_t content_length = strlen(url);
             pContent = new char[HTTP_RESPONSE_HTML_MAX];
             snprintf(pContent, HTTP_RESPONSE_HTML_MAX, HTTP_RESPONSE_HTML, content_length, url);
@@ -317,7 +304,7 @@ void CHttpTask::OnUpload()
         {
           char url[128];
           snprintf(url, sizeof(url), "{\"error_code\":10,\"error_msg\": \"格式错误\",\"path\":\"\",\"url\":\"\"}");
-          // log("%s", url);
+          printf("%s\n", url);
           uint32_t content_length = strlen(url);
           pContent = new char[HTTP_RESPONSE_HTML_MAX];
           snprintf(pContent, HTTP_RESPONSE_HTML_MAX, HTTP_RESPONSE_HTML, content_length, url);
@@ -328,7 +315,7 @@ void CHttpTask::OnUpload()
       {
         char url[128];
         snprintf(url, sizeof(url), "{\"error_code\":11,\"error_msg\": \"格式错误\",\"path\":\"\",\"url\":\"\"}");
-        // log("%s", url);
+        printf("%s\n", url);
         uint32_t content_length = strlen(url);
         pContent = new char[HTTP_RESPONSE_HTML_MAX];
         snprintf(pContent, HTTP_RESPONSE_HTML_MAX, HTTP_RESPONSE_HTML, content_length, url);
@@ -339,7 +326,7 @@ void CHttpTask::OnUpload()
     {
       char url[128];
       snprintf(url, sizeof(url), "{\"error_code\":3,\"error_msg\": \"格式错误\",\"path\":\"\",\"url\":\"\"}");
-      // log("%s", url);
+      printf("%s\n", url);
       uint32_t content_length = strlen(url);
       pContent = new char[HTTP_RESPONSE_HTML_MAX];
       snprintf(pContent, HTTP_RESPONSE_HTML_MAX, HTTP_RESPONSE_HTML, content_length, url);
@@ -350,7 +337,7 @@ void CHttpTask::OnUpload()
   {
     char url[128];
     snprintf(url, sizeof(url), "{\"error_code\":2,\"error_msg\": \"格式错误\",\"path\":\"\",\"url\":\"\"}");
-    // log("%s", url);
+    printf("%s\n", url);
     uint32_t content_length = strlen(url);
     pContent = new char[HTTP_RESPONSE_HTML_MAX];
     snprintf(pContent, HTTP_RESPONSE_HTML_MAX, HTTP_RESPONSE_HTML, content_length, url);
@@ -374,30 +361,35 @@ void CHttpTask::OnDownload()
       if (strType == "jpg" || strType == "JPG" || strType == "jpeg" || strType == "JPEG" || strType == "png" || strType == "PNG" || strType == "gif" ||
           strType == "GIF")
       {
+        // 根据文件的扩展名，填充http协议头
         snprintf(szResponseHeader, sizeof(szResponseHeader), HTTP_RESPONSE_IMAGE, nTmpSize, strType.c_str());
       }
       else
       {
+        // multipart/form-data 需要在表单中进行文件上传时，就需要使用该格式
         snprintf(szResponseHeader, sizeof(szResponseHeader), HTTP_RESPONSE_EXTEND, nTmpSize);
       }
       int nLen = strlen(szResponseHeader);
       char *pContent = new char[nLen + nTmpSize];
       memcpy(pContent, szResponseHeader, nLen);
+      // 把文件内容填充到http协议包体中
       g_fileManager->downloadFileByUrl((char *) m_strUrl.c_str(), pContent + nLen, &nFileSize);
       int nTotalLen = nLen + nFileSize;
       CHttpConn::AddResponsePdu(m_ConnHandle, pContent, nTotalLen);
     }
     else
     {
+      // 文件不存在
       int nTotalLen = strlen(HTTP_RESPONSE_404);
       char *pContent = new char[nTotalLen];
       snprintf(pContent, nTotalLen, HTTP_RESPONSE_404);
       CHttpConn::AddResponsePdu(m_ConnHandle, pContent, nTotalLen);
-      // log("File size is invalied\n");
+      printf("File size is invalied\n");
     }
   }
   else
   {
+    // 获取文件的绝对路径名出错
     int nTotalLen = strlen(HTTP_RESPONSE_500);
     char *pContent = new char[nTotalLen];
     snprintf(pContent, nTotalLen, HTTP_RESPONSE_500);
@@ -418,12 +410,12 @@ CHttpConn::CHttpConn()
     m_conn_handle = ++g_conn_handle_generator;
   }
 
-  // //log("CHttpConn, handle=%u", m_conn_handle);
+  printf("CHttpConn, handle=%u\n", m_conn_handle);
 }
 
 CHttpConn::~CHttpConn()
 {
-  // //log("~CHttpConn, handle=%u", m_conn_handle);
+  printf("~CHttpConn, handle=%u\n", m_conn_handle);
 }
 
 int CHttpConn::Send(void *data, int len)
@@ -444,7 +436,7 @@ int CHttpConn::Send(void *data, int len)
   {
     m_out_buf.Write((char *) data + ret, len - ret);
     m_busy = true;
-    // //log("not send all, remain=%d", m_out_buf.GetWriteOffset());
+    printf("not send all, remain=%d\n", m_out_buf.GetWriteOffset());
   }
   else
   {
@@ -498,14 +490,14 @@ void CHttpConn::OnRead()
   uint32_t buf_len = m_in_buf.GetWriteOffset();
   in_buf[buf_len] = '\0';
 
-  // //log("OnRead, buf_len=%u, conn_handle=%u", buf_len, m_conn_handle); // for debug
+  printf("OnRead, buf_len=%u, conn_handle=%u\n", buf_len, m_conn_handle);  // for debug
 
   m_HttpParser.ParseHttpContent(in_buf, buf_len);
 
   if (m_HttpParser.IsReadAll())
   {
     string strUrl = m_HttpParser.GetUrl();
-    // log("IP:%s access:%s", m_peer_ip.c_str(), strUrl.c_str());
+    printf("IP:%s access:%s\n", m_peer_ip.c_str(), strUrl.c_str());
     if (strUrl.find("..") != strUrl.npos)
     {
       Close();
@@ -515,10 +507,10 @@ void CHttpConn::OnRead()
     if (m_HttpParser.GetContentLen() > HTTP_UPLOAD_MAX)
     {
       // file is too big
-      // log("content  is too big");
+      printf("content is too big\n");
       char url[128];
       snprintf(url, sizeof(url), "{\"error_code\":1,\"error_msg\": \"上传文件过大\",\"url\":\"\"}");
-      // log("%s", url);
+      printf("%s\n", url);
       uint32_t content_length = strlen(url);
       char pContent[1024];
       snprintf(pContent, sizeof(pContent), HTTP_RESPONSE_HTML, content_length, url);
@@ -537,7 +529,7 @@ void CHttpConn::OnRead()
       }
       catch (...)
       {
-        // log("not enough memory");
+        printf("not enough memory\n");
         char szResponse[HTTP_RESPONSE_500_LEN + 1];
         snprintf(szResponse, HTTP_RESPONSE_500_LEN, "%s", HTTP_RESPONSE_500);
         Send(szResponse, HTTP_RESPONSE_500_LEN);
@@ -581,7 +573,7 @@ void CHttpConn::OnWrite()
   if (ret < out_buf_size)
   {
     m_busy = true;
-    //        //log("not send all, remain=%d", m_out_buf.GetWriteOffset());
+    printf("not send all, remain=%d\n", m_out_buf.GetWriteOffset());
   }
   else
   {
@@ -599,7 +591,7 @@ void CHttpConn::OnTimer(uint64_t curr_tick)
 {
   if (curr_tick > m_last_recv_tick + HTTP_CONN_TIMEOUT)
   {
-    // log("HttpConn timeout, handle=%d", m_conn_handle);
+    printf("HttpConn timeout, handle=%d\n", m_conn_handle);
     Close();
   }
 }
