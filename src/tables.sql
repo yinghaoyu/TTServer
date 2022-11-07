@@ -83,7 +83,7 @@ CREATE TABLE `IMGroupMember` (
 ) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8 COMMENT='用户和群的关系表'
 
 --群消息表,x代表第几张表，目前做了分表有8张:0-7.消息具体在哪张表中，是groupId%IMGroupMessage表的数目
-CREATE TABLE `IMGroupMessage_(x)` (
+CREATE TABLE `IMGroupMessage_0` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `groupId` int(11) unsigned NOT NULL COMMENT '用户的关系id',
     `userId` int(11) unsigned NOT NULL COMMENT '发送用户的id',
