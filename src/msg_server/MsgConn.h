@@ -1,10 +1,3 @@
-/*
- * MsgConn.h
- *
- *  Created on: 2013-7-5
- *      Author: ziteng@mogujie.com
- */
-
 #ifndef MSGCONN_H_
 #define MSGCONN_H_
 

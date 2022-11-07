@@ -1,11 +1,3 @@
-//
-//  PushServConn.h
-//  im-server-TT
-//
-//  Created by luoning on 14-9-15.
-//  Copyright (c) 2014年 luoning. All rights reserved.
-//
-
 #ifndef PushServConn_H
 #define PushServConn_H
 

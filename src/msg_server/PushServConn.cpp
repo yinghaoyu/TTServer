@@ -1,11 +1,3 @@
-//
-//  PushServConn.cpp
-//  im-server-TT
-//
-//  Created by luoning on 14-9-15.
-//  Copyright (c) 2014年 luoning. All rights reserved.
-//
-
 #include "PushServConn.h"
 #include "IM.BaseDefine.pb.h"
 #include "IM.Other.pb.h"
@@ -125,7 +117,7 @@ CPushServConn::~CPushServConn() {}
 
 void CPushServConn::Connect(const char *server_ip, uint16_t server_port, uint32_t serv_idx)
 {
-  // log("Connecting to Push Server %s:%d ", server_ip, server_port);
+  printf("Connecting to Push Server %s:%d\n", server_ip, server_port);
 
   m_serv_idx = serv_idx;
   m_handle = netlib_connect(server_ip, server_port, imconn_callback, (void *) &g_push_server_conn_map);
@@ -154,7 +146,7 @@ void CPushServConn::Close()
 
 void CPushServConn::OnConfirm()
 {
-  // log("connect to push server success ");
+  printf("connect to push server success\n");
   m_bOpen = true;
   g_push_server_list[m_serv_idx].reconnect_cnt = MIN_RECONNECT_CNT / 2;
   g_master_push_conn = this;
@@ -162,7 +154,7 @@ void CPushServConn::OnConfirm()
 
 void CPushServConn::OnClose()
 {
-  // log("onclose from push server handle=%d ", m_handle);
+  printf("onclose from push server handle=%d\n", m_handle);
   Close();
 }
 
@@ -180,7 +172,7 @@ void CPushServConn::OnTimer(uint64_t curr_tick)
 
   if (curr_tick > m_last_recv_tick + SERVER_TIMEOUT)
   {
-    // log("conn to push server timeout ");
+    printf("conn to push server timeout\n");
     Close();
   }
 }
@@ -190,20 +182,15 @@ void CPushServConn::HandlePdu(CImPdu *pPdu)
   switch (pPdu->GetCommandId())
   {
   case CID_OTHER_HEARTBEAT:
-    ////log("push server heart beat. ");
+    printf("push server heart beat.\n");
     break;
   case CID_OTHER_PUSH_TO_USER_RSP:
     _HandlePushToUserResponse(pPdu);
     break;
   default:
-    // log("push server, wrong cmd id=%d ", pPdu->GetCommandId());
+    printf("push server, wrong cmd id=%d\n", pPdu->GetCommandId());
     break;
   }
 }
 
-void CPushServConn::_HandlePushToUserResponse(CImPdu *pPdu)
-{
-  // uint32_t result_cnt = pPdu->GetUserCnt();
-  // push_result_t* push_result_list = pPdu->GetUserTokenList();
-  // log("HandlePushToUserResponse ");
-}
+void CPushServConn::_HandlePushToUserResponse(CImPdu *pPdu) {}

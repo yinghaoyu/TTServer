@@ -1,10 +1,3 @@
-/*
- * AttachData.h
- *
- *  Created on: 2014年4月16日
- *      Author: ziteng
- */
-
 #ifndef ATTACHDATA_H_
 #define ATTACHDATA_H_
 

@@ -1,12 +1,3 @@
-/*
- * ImUser.cpp
- *
- *  Created on: 2014年4月16日
- *      Author: ziteng
- *  Brief:
- *  	a map from user_id to userInfo and connection list
- */
-
 #include "ImUser.h"
 #include "IM.Login.pb.h"
 #include "IM.Server.pb.h"
@@ -16,7 +7,6 @@ using namespace ::IM::BaseDefine;
 
 CImUser::CImUser(string user_name)
 {
-  // //log("ImUser, userId=%u\n", user_id);
   m_login_name = user_name;
   m_bValidate = false;
   m_user_id = 0;
@@ -24,10 +14,7 @@ CImUser::CImUser(string user_name)
   m_pc_login_status = IM::BaseDefine::USER_STATUS_OFFLINE;
 }
 
-CImUser::~CImUser()
-{
-  // //log("~ImUser, userId=%u\n", m_user_id);
-}
+CImUser::~CImUser() {}
 
 CMsgConn *CImUser::GetUnValidateMsgConn(uint32_t handle)
 {
@@ -151,7 +138,7 @@ void CImUser::HandleKickUser(CMsgConn *pConn, uint32_t reason)
     CMsgConn *pConn = it->second;
     if (pConn)
     {
-      // log("kick service user, user_id=%u.", m_user_id);
+      printf("kick service user, user_id=%u.\n", m_user_id);
       IM::Login::IMKickUser msg;
       msg.set_user_id(m_user_id);
       msg.set_kick_reason((::IM::BaseDefine::KickReasonType) reason);
